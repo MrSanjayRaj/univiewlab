@@ -14,43 +14,29 @@ export default function Home() {
           priority
         />
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
-          Welcome to Univiewlab
+          Univiewlab: The Ultimate Responsive Preview & Web Audit Tool
         </h1>
-        <ol className="font-mono list-inside list-decimal text-base sm:text-lg text-center text-gray-700 dark:text-gray-300">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{' '}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center items-center">
+        <p className="text-lg sm:text-xl text-center text-gray-700 dark:text-gray-300 max-w-2xl">
+          Univiewlab helps you preview your website on 40+ real device models, search and select devices, and instantly check your site’s look and feel. Plus, run security and SEO audits to ensure your site is safe and optimized for search engines—all in one modern, easy-to-use interface.
+        </p>
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center items-center mt-4">
           <a
+            href="/preview"
             className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-500 text-white gap-2 hover:from-blue-700 hover:to-purple-600 font-medium text-base h-12 px-6 w-full sm:w-auto shadow-lg"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
+            Device Preview
           </a>
           <a
+            href="/security"
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-base h-12 px-6 w-full sm:w-auto md:w-[158px] shadow"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
           >
-            Read our docs
+            Security Check
+          </a>
+          <a
+            href="/seo"
+            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-base h-12 px-6 w-full sm:w-auto md:w-[158px] shadow"
+          >
+            SEO Audit
           </a>
         </div>
       </main>
