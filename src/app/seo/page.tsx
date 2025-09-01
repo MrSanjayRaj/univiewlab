@@ -19,7 +19,7 @@ export default function Page() {
   const [result, setResult] = useState<SeoResult | null>(null);
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -56,8 +56,8 @@ export default function Page() {
       });
       if (headings.length === 0) issues.push("No headings (h1-h6) found");
       setResult({ title, description, canonical, robots, og, twitter, headings, issues });
-    } catch (err: any) {
-      setError("Failed to analyze SEO: " + err?.message);
+    } catch (err) {
+      setError("Failed to analyze SEO: " + (err instanceof Error ? err.message : String(err)));
     }
     setLoading(false);
   }

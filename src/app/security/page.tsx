@@ -2,11 +2,17 @@
 
 import React, { useState } from "react";
 
+type SecurityHeaders = Record<string, string>;
+type SecurityApiReport = {
+  headers?: SecurityHeaders;
+  score?: string;
+  [key: string]: unknown;
+};
 type SecurityResult = {
   https: boolean;
-  headers?: Record<string, string>;
+  headers?: SecurityHeaders;
   issues: string[];
-  apiReport?: any;
+  apiReport?: SecurityApiReport;
 };
 
 export default function Page() {
@@ -15,15 +21,15 @@ export default function Page() {
   const [result, setResult] = useState<SecurityResult | null>(null);
   const [error, setError] = useState("");
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError("");
     setResult(null);
     try {
       const issues: string[] = [];
-      let headers: Record<string, string> = {};
-      let apiReport: any = null;
+  let headers: SecurityHeaders = {};
+  let apiReport: SecurityApiReport | undefined = undefined;
       let https = false;
       try {
         const u = new URL(url);
@@ -66,9 +72,9 @@ export default function Page() {
         issues.push("Could not fetch security headers (network error)");
       }
 
-      setResult({ https, headers, issues, apiReport });
-    } catch (err: any) {
-      setError("Failed to check security: " + err?.message);
+  setResult({ https, headers, issues, apiReport });
+      } catch (err) {
+        setError("Failed to check security: " + (err instanceof Error ? err.message : String(err)));
     }
     setLoading(false);
   }
