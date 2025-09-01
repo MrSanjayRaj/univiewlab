@@ -5,17 +5,22 @@ export default function Home() {
   return (
     <div className="font-sans min-h-screen flex flex-col justify-between items-center bg-gradient-to-br from-white via-gray-50 to-gray-200 dark:from-[#18181b] dark:via-[#23232a] dark:to-[#18181b] p-2 sm:p-4 md:p-8">
       <main className="flex flex-1 flex-col w-full max-w-3xl items-center justify-center gap-8 py-6 sm:py-10">
-        <Image
-          className="dark:invert mb-4 w-32 sm:w-44 md:w-48 h-auto"
-          src="/next.svg"
-          alt="Univiewlab logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent px-2">
-          Univiewlab: The Ultimate Responsive Preview & Web Audit Tool
-        </h1>
+        <div className="flex flex-col items-center gap-2 mb-2">
+          <Image
+            src="/univiewlab-logo.svg"
+            alt="Univiewlab logo"
+            width={72}
+            height={72}
+            className="rounded-full shadow-lg border-2 border-blue-500 bg-white dark:bg-[#23232a]"
+            priority
+          />
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-center bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent px-2 tracking-tight">
+            Univiewlab
+          </h1>
+        </div>
+        <h2 className="text-lg sm:text-xl md:text-2xl font-semibold text-center text-gray-700 dark:text-gray-200 max-w-2xl mb-2">
+          The Ultimate Responsive Preview & Web Audit Tool
+        </h2>
         <p className="text-base sm:text-lg md:text-xl text-center text-gray-700 dark:text-gray-300 max-w-xl px-2">
           Univiewlab helps you preview your website on 40+ real device models, search and select devices, and instantly check your site’s look and feel. Plus, run security and SEO audits to ensure your site is safe and optimized for search engines—all in one modern, easy-to-use interface.
         </p>
