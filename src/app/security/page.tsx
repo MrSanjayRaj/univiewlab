@@ -1,13 +1,76 @@
 "use client";
+
 import React, { useState } from "react";
+
+type SecurityResult = {
+  https: boolean;
+  headers?: Record<string, string>;
+  issues: string[];
+  apiReport?: any;
+};
 
 export default function Page() {
   const [url, setUrl] = useState("");
-  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [result, setResult] = useState<SecurityResult | null>(null);
+  const [error, setError] = useState("");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+    setError("");
+    setResult(null);
+    try {
+      const issues: string[] = [];
+      let headers: Record<string, string> = {};
+      let apiReport: any = null;
+      let https = false;
+      try {
+        const u = new URL(url);
+        https = u.protocol === "https:";
+        if (!https) issues.push("Site does not use HTTPS.");
+      } catch {
+        setError("Invalid URL");
+        setLoading(false);
+        return;
+      }
+
+      // Try to get headers via securityheaders.com API (CORS proxy)
+      try {
+        const apiUrl = `https://securityheaders.com/?q=${encodeURIComponent(url)}&followRedirects=on&hide=on&json`;
+        const resp = await fetch(apiUrl);
+        if (resp.ok) {
+          apiReport = await resp.json();
+          if (apiReport && apiReport['headers']) {
+            headers = apiReport['headers'];
+            // Check for common security headers
+            const required = [
+              "content-security-policy",
+              "strict-transport-security",
+              "x-content-type-options",
+              "x-frame-options",
+              "x-xss-protection",
+              "referrer-policy",
+              "permissions-policy"
+            ];
+            for (const h of required) {
+              if (!headers[h]) {
+                issues.push(`Missing header: ${h}`);
+              }
+            }
+          }
+        } else {
+          issues.push("Could not fetch security headers (API error)");
+        }
+      } catch {
+        issues.push("Could not fetch security headers (network error)");
+      }
+
+      setResult({ https, headers, issues, apiReport });
+    } catch (err: any) {
+      setError("Failed to check security: " + err?.message);
+    }
+    setLoading(false);
   }
 
   return (
@@ -16,7 +79,7 @@ export default function Page() {
         Security Check
       </h1>
       <p style={{ color: "#475569", marginBottom: 24 }}>
-        Enter a URL to check for basic security issues.
+        Enter a URL to check for advanced security issues (HTTPS, headers, and more).
       </p>
       <form onSubmit={handleSubmit} style={{ display: "flex", gap: 12, marginBottom: 32 }}>
         <input
@@ -38,26 +101,44 @@ export default function Page() {
         />
         <button
           type="submit"
+          disabled={loading}
           style={{
-            background: "#2563eb",
+            background: loading ? "#a5b4fc" : "#2563eb",
             color: "#fff",
             border: "none",
             borderRadius: 8,
             padding: "0.75rem 1.5rem",
             fontWeight: 600,
             fontSize: "1rem",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             boxShadow: "0 2px 8px 0 rgba(37,99,235,0.08)",
             transition: "background 0.2s",
           }}
         >
-          Scan
+          {loading ? "Scanning..." : "Scan"}
         </button>
       </form>
-      {submitted && (
+      {error && <div style={{ color: 'red', marginBottom: 16 }}>{error}</div>}
+      {result && (
         <div style={{ marginTop: 24 }}>
-          <p style={{ color: '#64748b', fontWeight: 500 }}>URL submitted: <span style={{ color: '#2563eb' }}>{url}</span></p>
-          {/* TODO: Show security scan results here */}
+          <h2 style={{ color: '#2563eb', fontWeight: 600, fontSize: '1.2rem', marginBottom: 8 }}>Results for: <span style={{ color: '#334155' }}>{url}</span></h2>
+          <ul style={{ color: '#64748b', marginBottom: 12 }}>
+            <li>HTTPS: <b style={{ color: result.https ? '#22c55e' : '#ef4444' }}>{result.https ? 'Yes' : 'No'}</b></li>
+            {result.issues.length === 0 ? (
+              <li style={{ color: '#22c55e' }}>No major issues found!</li>
+            ) : (
+              result.issues.map((issue, i) => <li key={i} style={{ color: '#ef4444' }}>{issue}</li>)
+            )}
+          </ul>
+          {result.headers && (
+            <details style={{ marginBottom: 8 }}>
+              <summary style={{ cursor: 'pointer', color: '#2563eb', fontWeight: 500 }}>Show Response Headers</summary>
+              <pre style={{ fontSize: 13, background: '#f1f5f9', padding: 12, borderRadius: 8, overflowX: 'auto' }}>{JSON.stringify(result.headers, null, 2)}</pre>
+            </details>
+          )}
+          {result.apiReport && result.apiReport['score'] && (
+            <div style={{ color: '#2563eb', fontWeight: 500, marginTop: 8 }}>SecurityHeaders.com Grade: <b>{result.apiReport['score']}</b></div>
+          )}
         </div>
       )}
     </div>
