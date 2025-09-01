@@ -1,3 +1,4 @@
+// TypeScript config for frontend
 {
   "compilerOptions": {
     "target": "ES2017",
